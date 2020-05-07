@@ -21,7 +21,6 @@
 		$artist = $xml -> xpath("COLLECTION/TRACK[@TrackID = '" . $key . "']/@Artist")[0];
 		$track_name = $xml -> xpath("COLLECTION/TRACK[@TrackID = '" . $key . "']/@Name")[0];
 		$label = $xml -> xpath("COLLECTION/TRACK[@TrackID = '" . $key . "']/@Label")[0];
-		//echo $i + 1 . ") " . $artist . " - " . $track_name . " [" . $label . "]\n";
 		fwrite($myfile, $i + 1 . ") " . $artist . " - " . $track_name . " [" . $label . "]\n");
 	}
 	echo "Playlist has been exported to file " . $playlist_name . ".txt,\n"
