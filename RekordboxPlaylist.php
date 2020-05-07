@@ -1,23 +1,30 @@
 <?php
 	$xml = simplexml_load_file("collection.xml");
+	$num_tracks = 0;
 
-	$playlist_name = "Primitive EDM Mix";
-
+	echo "Please enter a playlist name.\n";
+	$playlist_name = trim(fgets(STDIN));
 	$num_tracks = ($xml -> xpath("PLAYLISTS/NODE/NODE[@Name = '" . $playlist_name . "']/@Entries"))[0];
-
 	$track_list = $xml -> xpath("PLAYLISTS/NODE/NODE[@Name = '" . $playlist_name . "']/TRACK");
-	//print_r($track_list);
 
+	while ($num_tracks == 0) {
+		echo "Playlist '" . $playlist_name . "' is not a valid playlist, or it contains no tracks.\n";
+		echo "Please enter a valid playlist name.\n";
+		$playlist_name = trim(fgets(STDIN));
+		$num_tracks = ($xml -> xpath("PLAYLISTS/NODE/NODE[@Name = '" . $playlist_name . "']/@Entries"))[0];
+		$track_list = $xml -> xpath("PLAYLISTS/NODE/NODE[@Name = '" . $playlist_name . "']/TRACK");
+	}
+
+	$myfile = fopen($playlist_name . ".txt", "w");
 	for ($i = 0; $i < $num_tracks; $i++) {
 		$key = $track_list[$i] -> attributes();
-		//$all_metadata = $xml -> xpath("COLLECTION/TRACK[@TrackID = '" . $key . "']");
-		//print_r($all_metadata);
 		$artist = $xml -> xpath("COLLECTION/TRACK[@TrackID = '" . $key . "']/@Artist")[0];
 		$track_name = $xml -> xpath("COLLECTION/TRACK[@TrackID = '" . $key . "']/@Name")[0];
 		$label = $xml -> xpath("COLLECTION/TRACK[@TrackID = '" . $key . "']/@Label")[0];
-		echo $i + 1 . ") ";
-		echo $artist . " - ";
-		echo $track_name . " [";
-		echo $label . "]\n";
+		//echo $i + 1 . ") " . $artist . " - " . $track_name . " [" . $label . "]\n";
+		fwrite($myfile, $i + 1 . ") " . $artist . " - " . $track_name . " [" . $label . "]\n");
 	}
+	echo "Playlist has been exported to file " . $playlist_name . ".txt,\n"
+		. "which is located in the same folder as this script.\n";
+	fclose($myfile);
 ?>
